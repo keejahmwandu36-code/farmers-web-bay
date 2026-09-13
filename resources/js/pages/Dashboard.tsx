@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { api, setToken } from '../services/api';
 
 interface Reading {
@@ -152,9 +152,10 @@ export default function Dashboard() {
                                 const isLow = r && Number(r.soil_moisture) < Number(field.minimum_moisture);
 
                                 return (
-                                    <div
+                                    <Link
                                         key={field.id}
-                                        className="bg-white rounded-xl shadow-sm border border-gray-200 p-5"
+                                        to={`/fields/${field.id}`}
+                                        className="block bg-white rounded-xl shadow-sm border border-gray-200 p-5 hover:shadow-md hover:border-green-300 transition-all cursor-pointer"
                                     >
                                         <div className="flex items-start justify-between mb-3">
                                             <div>
@@ -209,7 +210,11 @@ export default function Dashboard() {
                                                 No readings yet
                                             </p>
                                         )}
-                                    </div>
+
+                                        <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-green-600 font-medium text-center">
+                                            View history →
+                                        </div>
+                                    </Link>
                                 );
                             })}
                         </div>

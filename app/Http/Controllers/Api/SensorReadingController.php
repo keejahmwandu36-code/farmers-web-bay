@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Alert;
 use App\Models\Device;
+use App\Models\Field;
 use App\Models\SensorReading;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -60,11 +61,21 @@ class SensorReadingController extends Controller
         ], 201);
     }
 
+    /**
+     * List readings for a field, with authorization.
+     */
     public function index(Request $request, $fieldId)
     {
+        $field = Field::with('farm')->findOrFail($fieldId);
+
+        if ($field->farm->user_id !== $request->user()->id) {
+            abort(403, 'You do not have access to this field.');
+        }
+
         $readings = SensorReading::whereHas('device', function ($q) use ($fieldId) {
                 $q->where('field_id', $fieldId);
             })
+            ->with('device:id,device_uid,field_id')
             ->orderByDesc('recorded_at')
             ->limit(100)
             ->get();
