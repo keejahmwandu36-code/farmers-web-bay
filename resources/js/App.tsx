@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -12,9 +13,12 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 export default function App() {
     return (
         <Routes>
-            <Route path="/"          element={<Navigate to="/dashboard" replace />} />
-            <Route path="/login"     element={<Login />} />
-            <Route path="/register"  element={<Register />} />
+            {/* Public landing page — anyone can view */}
+            <Route path="/" element={<Landing />} />
+
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
             <Route
                 path="/dashboard"
                 element={<RequireAuth><Dashboard /></RequireAuth>}
@@ -23,6 +27,9 @@ export default function App() {
                 path="/fields/:id"
                 element={<RequireAuth><FieldDetails /></RequireAuth>}
             />
+
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
     );
 }
