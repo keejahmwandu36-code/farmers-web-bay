@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api, setToken } from '../services/api';
+import { getUserId, clearUserId } from '../services/user';
 
 interface Reading {
     soil_moisture: number;
@@ -51,6 +52,32 @@ export default function Dashboard() {
 
     useEffect(() => {
         loadDashboard();
+
+        const id = getUserId();
+        console.log('🔌 Dashboard mounted. userId =', id);
+        console.log('🔌 token present?', !!localStorage.getItem('token'));
+
+        const Echo = (window as any).Echo;
+
+        if (id > 0 && Echo) {
+            console.log('🔌 Subscribing to channel: user.' + id);
+            const channel = Echo.private(`user.${id}`);
+
+            channel.listen('.reading.created', (payload: any) => {
+                console.log('📡 Live reading received:', payload);
+                loadDashboard();
+            });
+
+            return () => {
+                console.log('🔌 Leaving channel: user.' + id);
+                Echo.leave(`user.${id}`);
+            };
+        } else {
+            console.warn('🔌 Echo not available or userId invalid.', {
+                Echo: !!Echo,
+                userId: id,
+            });
+        }
     }, []);
 
     async function loadDashboard() {
@@ -71,6 +98,7 @@ export default function Dashboard() {
             await api.logout();
         } catch {}
         setToken(null);
+        clearUserId();
         navigate('/login');
     }
 

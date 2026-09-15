@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api, setToken } from '../services/api';
+import { setUserId } from '../services/user';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -14,8 +15,9 @@ export default function Login() {
         setError('');
         setLoading(true);
         try {
-            const { token } = await api.login(email, password);
+            const { token, user } = await api.login(email, password);
             setToken(token);
+            setUserId(user.id);
             navigate('/dashboard');
         } catch (err: any) {
             setError(err.message || 'Login failed');

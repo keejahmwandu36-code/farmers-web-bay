@@ -13,6 +13,7 @@ export default defineConfig({
             fonts: [
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
+                    optimizedFallbacks: false,
                 }),
             ],
         }),
@@ -21,12 +22,30 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            '@': path.resolve(__dirname, 'resources/js'),
+            '@': path.resolve(import.meta.dirname, 'resources/js'),
         },
     },
     server: {
+        host: '127.0.0.1',
+        port: 5173,
+        strictPort: true,
+        hmr: {
+            host: '127.0.0.1',
+        },
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
+    },
+    optimizeDeps: {
+        include: [
+            'react',
+            'react-dom',
+            'react-dom/client',
+            'react-router-dom',
+            'recharts',
+            'laravel-echo',
+            'pusher-js',
+            '@laravel/echo-react',
+        ],
     },
 });

@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api, setToken } from '../services/api';
+import { setUserId } from '../services/user';
 
 export default function Register() {
     const [name, setName] = useState('');
@@ -15,8 +16,9 @@ export default function Register() {
         setError('');
         setLoading(true);
         try {
-            const { token } = await api.register(name, email, password);
+            const { token, user } = await api.register(name, email, password);
             setToken(token);
+            setUserId(user.id);
             navigate('/dashboard');
         } catch (err: any) {
             setError(err.message || 'Registration failed');

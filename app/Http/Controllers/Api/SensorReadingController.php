@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\SensorReadingCreated;
 use App\Http\Controllers\Controller;
 use App\Models\Alert;
 use App\Models\Device;
@@ -53,6 +54,12 @@ class SensorReadingController extends Controller
 
             return $reading;
         });
+
+        // Load relationships needed for the broadcast payload
+        $reading->load('device.field.farm');
+
+        // Fire the real-time broadcast event
+        broadcast(new SensorReadingCreated($reading));
 
         return response()->json([
             'status'      => 'ok',
