@@ -9,8 +9,26 @@ class Farm extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'name', 'location'];
+    protected $fillable = [
+        'user_id',
+        'name',
+        'location',
+        'latitude',
+        'longitude',
+    ];
 
-    public function user()   { return $this->belongsTo(User::class); }
-    public function fields() { return $this->hasMany(Field::class); }
+    protected $casts = [
+        'latitude'  => 'float',
+        'longitude' => 'float',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function fields()
+    {
+        return $this->hasMany(Field::class);
+    }
 }

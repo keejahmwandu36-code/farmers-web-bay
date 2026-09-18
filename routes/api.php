@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\SensorReadingController;
+use App\Http\Controllers\Api\WeatherController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
@@ -15,8 +16,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me',      [AuthController::class, 'me']);
 
-    Route::get('/dashboard',                [DashboardController::class, 'index']);
-    Route::get('/fields/{field}/readings',  [SensorReadingController::class, 'index']);
+    Route::get('/dashboard',                  [DashboardController::class, 'index']);
+    Route::get('/fields/{field}/readings',    [SensorReadingController::class, 'index']);
+    Route::get('/farms/{farm}/weather',       [WeatherController::class, 'forFarm']);
+    Route::get('/farms/{farm}/rain-forecast', [WeatherController::class, 'rainForecast']);
 
     Route::post('/broadcasting/auth', function (\Illuminate\Http\Request $request) {
         return Broadcast::auth($request);
